@@ -7,8 +7,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static jm.task.core.jdbc.util.Util.*;
-
 public class UserServiceImpl implements UserService {
     public void createUsersTable() {
         Util util = new Util();
@@ -42,7 +40,6 @@ public class UserServiceImpl implements UserService {
         try (PreparedStatement statement = util.getConnection().prepareStatement
                 ("insert into users (name, lastName, age) values(?,?,?)")) {
 
-//            statement.executeUpdate("insert into users (name, lastName, age) values(?,?,?)");
             statement.setString(1, name);
             statement.setString(2, lastName);
             statement.setByte(3, age);
