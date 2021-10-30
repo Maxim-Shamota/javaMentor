@@ -1,34 +1,102 @@
 package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
-import java.util.List;
+import jm.task.core.jdbc.util.Util;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
     public UserDaoJDBCImpl() {
     }
 
     public void createUsersTable() {
+        Util util = new Util();
 
+        try (Statement statement = util.getConnection().createStatement()) {
+
+            statement.execute("CREATE TABLE `users`.`users` (\n" +
+                    "  `id` INT NOT NULL AUTO_INCREMENT,\n" +
+                    "  `name` VARCHAR(45) NOT NULL,\n" +
+                    "  `lastName` VARCHAR(45) NOT NULL,\n" +
+                    "  `age` INT NOT NULL,\n" +
+                    "  PRIMARY KEY (`id`));");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void dropUsersTable() {
+        Util util = new Util();
 
+        try (Statement statement = util.getConnection().createStatement()) {
+            statement.executeUpdate("drop table users");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void saveUser(String name, String lastName, byte age) {
+        Util util = new Util();
 
+        try (PreparedStatement statement = util.getConnection().prepareStatement
+                ("insert into users (name, lastName, age) values(?,?,?)")) {
+
+            statement.setString(1, name);
+            statement.setString(2, lastName);
+            statement.setByte(3, age);
+            statement.execute();
+            System.out.println("User с именем – " + name + " добавлен в базу данных");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void removeUserById(long id) {
+        Util util = new Util();
 
+        try (Statement statement = util.getConnection().createStatement()) {
+            statement.executeUpdate("delete from users where id=" + id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public List<User> getAllUsers() {
-        return null;
+        Util util = new Util();
+        List<User> list = new ArrayList<>();
+        try (Statement statement = util.getConnection().createStatement();
+             ResultSet resultSet = statement.executeQuery("select * from users")) {
+            String name;
+            String lastName;
+            byte age;
+            while (resultSet.next()) {
+                name = resultSet.getString("name");
+                lastName = resultSet.getString("lastName");
+                age = resultSet.getByte("age");
+
+                User user = new User(name, lastName, age);
+                list.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
     public void cleanUsersTable() {
+        Util util = new Util();
 
+        try (Statement statement = util.getConnection().createStatement()) {
+            statement.executeUpdate("delete from users");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
