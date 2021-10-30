@@ -14,7 +14,7 @@ public class Main {
         User user3 = new User("Mary", "Bodrova", (byte) 19);
         User user4 = new User("Helen", "Sidorova", (byte) 32);
 
-//        добавление таблицы
+//        создание таблицы
         userService.createUsersTable();
 //        добавление юзеров
         userService.saveUser(user1.getName(), user1.getLastName(), user1.getAge());
@@ -23,12 +23,14 @@ public class Main {
         userService.saveUser(user4.getName(), user4.getLastName(), user4.getAge());
 //        удаление юзера по id
         userService.removeUserById(2);
-//        получение всех юзеров
-//        userService.getAllUsers();
+//        получение и вывод в консоль всех юзеров
+        for (User s : userService.getAllUsers()) {
+            System.out.println(s);
+        }
 //        очистка таблицы
-//        userService.cleanUsersTable();
+        userService.cleanUsersTable();
 //        удаление таблицы
-//        userService.dropUsersTable();
+        userService.dropUsersTable();
 
     }
 }
